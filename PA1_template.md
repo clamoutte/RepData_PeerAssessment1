@@ -83,7 +83,7 @@ activityDailySummary
 hist(activityDailySummary$total, main= "Total # of Steps per Day", xlab= "Total Steps", col = "grey")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](PA1_template_files/figure-html/histogramDailySummary-1.png)<!-- -->
 
 3. Calculate and report the mean and median of the total number of steps taken per day
 
@@ -121,7 +121,7 @@ activityIntervalSummary <- activitiesPP %>%
 plot(activityIntervalSummary$interval, activityIntervalSummary$mean, type = "l", xlab = "Interval", ylab = "Average Steps", main = "Average Daily Activity Pattern")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](PA1_template_files/figure-html/IntervalSummary-1.png)<!-- -->
 
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -296,7 +296,7 @@ activityImputedDailySummary <- activitiesImputed %>%
 hist(activityImputedDailySummary$total, main= "Total # of Steps per Day (Imputed)", xlab= "Total Steps", col = "grey")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](PA1_template_files/figure-html/ImputedHistogram-1.png)<!-- -->
 
 ```r
 mean(activityImputedDailySummary$total)
@@ -358,6 +358,6 @@ ggplot(activityImputedIntervalSummary, aes(interval, mean)) +
   ylab("Average # of steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
+![](PA1_template_files/figure-html/PlotImputedIntervalSummary-1.png)<!-- -->
   
 The average number of steps is generally higher during the weekends than on weekends. However the maxu=imum number of steps is achieved during weekdays.

@@ -36,7 +36,7 @@ activities <- read.csv(paste0(dirPath,"/",activityFile))
 2. Transform the data
 We are creating a subset will all na values removed.
 
-```{r}
+```{r removeNAValues}
 
 activitiesPP <- activities %>% filter(!is.na(steps))
 ```
@@ -47,7 +47,7 @@ We will remove NA values before making any calculations.
 
 1. Calculate the total number of steps taken per day
 
-```{r }
+```{r SummarizeStepsByDay }
 activityDailySummary <- activitiesPP %>% 
                       group_by(date) %>% 
                       summarise(total = sum(steps), mean=mean(steps), median = median(steps))
@@ -58,13 +58,13 @@ activityDailySummary
 
 2. Make a histogram of the total number of steps taken each day
 
-```{r }
+```{r histogramDailySummary }
 hist(activityDailySummary$total, main= "Total # of Steps per Day", xlab= "Total Steps", col = "grey")
 ```
 
 3. Calculate and report the mean and median of the total number of steps taken per day
 
-```{r }
+```{r MeanAndMedian}
 mean(activityDailySummary$total)
 median(activityDailySummary$total)
 
@@ -78,7 +78,7 @@ The median is **10,765**.
 
 1. Make a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-```{r}
+```{r IntervalSummary}
 activityIntervalSummary <- activitiesPP %>% 
   group_by(interval) %>% 
   summarise(total = sum(steps), mean=mean(steps), median = median(steps))
@@ -90,7 +90,7 @@ plot(activityIntervalSummary$interval, activityIntervalSummary$mean, type = "l",
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+```{r maxStepsInterval}
 activityIntervalSummary[which.max(activityIntervalSummary$mean),]
 ```
 
@@ -102,7 +102,7 @@ There are a number of days/intervals where there are missing values (coded as \c
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
 
-```{r}
+```{r SumNA}
 sum(is.na(activities))
 ``` 
 
@@ -121,7 +121,7 @@ As suggested in the assignment, I will fill in missing values based on the mean 
 
 First, add daily total steps, mean and median to the original data set.
  
- ```{r }
+ ```{r ImputedByAvgDay }
  activitiesNew <- merge(activities, as.data.frame(activityDailySummary), by="date")
  
  head(activitiesNew)
@@ -130,7 +130,7 @@ First, add daily total steps, mean and median to the original data set.
  
 After discovering that some dates simply do not have any interval values, I decide to fill in NA values with the mean for the interval.
  
- ```{r }
+ ```{r ImputedByAvgInterval}
   activitiesNew <- merge(activities, as.data.frame(activityIntervalSummary), by="interval")
    head(activitiesNew)
  head(activitiesNew %>% filter(is.na(steps)))
@@ -138,7 +138,7 @@ After discovering that some dates simply do not have any interval values, I deci
 
 Then, fill in **NA** values in the steps column, with the mean for the interval. 
 
-```{r}
+```{r ImputedValueAssignment}
 
 activitiesNA <- activitiesNew %>% filter(is.na(steps)) %>% mutate(steps = mean)
 
@@ -148,14 +148,14 @@ head(activitiesNA)
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r}
+```{r NewDataSet}
  activitiesImputed <- rbind(activitiesNew %>% filter(!is.na(steps)), activitiesNA) %>% arrange(date)
  head(activitiesImputed)
 ```
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
    
-```{r }
+```{r ImputedHistogram}
 activityImputedDailySummary <- activitiesImputed %>% 
                       group_by(date) %>% 
                       summarise(total = sum(steps), mean=mean(steps), median = median(steps))
@@ -172,7 +172,7 @@ Imputing missing values based on the mean for the interval does not have a signi
 
 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
-```{r }
+```{r AddWekendColumn }
 activitiesImputed$dayOfWeek <- sapply(as.Date(activitiesImputed$date), function(x) {  if(weekdays(x) == "Saturday" | weekdays(x)== "Sunday")  "weekend" else "weekday"} )
 
 head(activitiesImputed)
@@ -181,7 +181,7 @@ head(activitiesImputed)
 
 First calculate the average # of steps per interval and type of day.
 
-```{r }
+```{r CalculateWeekendAvg}
 activityImputedIntervalSummary <- activitiesImputed %>% 
   group_by(interval,dayOfWeek) %>% 
   summarise(total = sum(steps), mean=mean(steps), median = median(steps))
@@ -189,7 +189,7 @@ activityImputedIntervalSummary <- activitiesImputed %>%
 
 Plot the averages to compare weekdays and weekday estimates.
 
-```{r }
+```{r PlotImputedIntervalSummary}
 ggplot(activityImputedIntervalSummary, aes(interval, mean)) + 
   geom_line() + 
   facet_grid(dayOfWeek ~ .) +
